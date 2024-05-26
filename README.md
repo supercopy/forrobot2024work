@@ -3,6 +3,6 @@
 文件说明：  
 getpic.py 同时获取左右目图片存储到目标文件夹  
 getmat.py 读取来自matlab的mat数据文件  
-get_threshold.py 阈值调试工具  
+get_threshold.py 阈值调试工具，请注意：改变光照之后的阈值需要重新调试  
 change_name.py 快速修改文件名字  
 orange.py 返回橘子轮廓中心坐标  
