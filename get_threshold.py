@@ -42,11 +42,11 @@ def v_high(value):
 
 cv2.namedWindow('image',cv2.WINDOW_AUTOSIZE)
 # 可以自己设定初始值，最大值255不需要调节
-cv2.createTrackbar('H low', 'image', 35, 255, h_low) 
-cv2.createTrackbar('H high', 'image', 90, 255, h_high)
-cv2.createTrackbar('S low', 'image', 43, 255, s_low)
+cv2.createTrackbar('H low', 'image', 13, 255, h_low) 
+cv2.createTrackbar('H high', 'image', 31, 255, h_high)
+cv2.createTrackbar('S low', 'image', 105, 255, s_low)
 cv2.createTrackbar('S high', 'image', 255, 255, s_high)
-cv2.createTrackbar('V low', 'image', 35, 255, v_low)
+cv2.createTrackbar('V low', 'image', 83, 255, v_low)
 cv2.createTrackbar('V high', 'image', 255, 255, v_high)
 
 while True:
