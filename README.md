@@ -6,3 +6,4 @@ getmat.py 读取来自matlab的mat数据文件
 get_threshold.py 阈值调试工具，请注意：改变光照之后的阈值可能需要重新调试  
 change_name.py 快速修改文件名字  
 orange.py 返回橘子轮廓中心坐标  
+get_setting.py 得到当前相机宽高参数
