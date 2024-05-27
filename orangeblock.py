@@ -80,7 +80,5 @@ class fruit_center:
 
         cv2.imshow('imagel', imagel)
         cv2.imshow('imager', imager)
-        cv2.imshow('imagel_dilated', imagel_dilated)
-        cv2.imshow('imager_dilated', imager_dilated)
 
         return self.clX, self.clY, self.crX, self.crY

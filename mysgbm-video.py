@@ -55,26 +55,23 @@ print(Q)
 # -----------------------------------------------------------------------------------------------
 def onmouse_pick_points(event, x, y, flags, param):
     if event == cv2.EVENT_LBUTTONDOWN:
-        threeD = param
+        threeD_left = param
         print('\n像素坐标 x = %d, y = %d' % (x, y))
-        # print("世界坐标是：", threeD[y][x][0], threeD[y][x][1], threeD[y][x][2], "mm")
-        print("世界坐标xyz 是：", threeD[y][x][0] / 1000.0, threeD[y][x][1] / 1000.0, threeD[y][x][2] / 1000.0, "m")
+        # print("世界坐标是：", threeD_left[y][x][0], threeD_left[y][x][1], threeD_left[y][x][2], "mm")
+        print("世界坐标xyz 是：", threeD_left[y][x][0] / 1000.0, threeD_left[y][x][1] / 1000.0, threeD_left[y][x][2] / 1000.0, "m")
 
-        distance = math.sqrt(threeD[y][x][0] ** 2 + threeD[y][x][1] ** 2 + threeD[y][x][2] ** 2)
+        distance = math.sqrt(threeD_left[y][x][0] ** 2 + threeD_left[y][x][1] ** 2 + threeD_left[y][x][2] ** 2)
         distance = distance / 1000.0  # mm -> m
         print("距离是：", distance, "m")
 
 # 打开摄像头
-capl = cv2.VideoCapture(1)
+capl = cv2.VideoCapture(2)
 capl.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
 capl.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
 
-capr = cv2.VideoCapture(2)
+capr = cv2.VideoCapture(1)
 capr.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
 capr.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
-
-WIN_NAME = 'Deep disp'
-cv2.namedWindow(WIN_NAME, cv2.WINDOW_AUTOSIZE)
 
 # 读取视频
 fps = 0.0
@@ -130,36 +127,49 @@ if __name__ == "__main__":
                                     speckleRange=100,
                                     mode=cv2.STEREO_SGBM_MODE_HH
                                     )
-        # 计算视差
-        disparity = stereo.compute(img1_rectified, img2_rectified)
-
+        # 计算左相机视差
+        disparity_left = stereo.compute(img1_rectified, img2_rectified)
         # 归一化函数算法，生成深度图（灰度图）
-        disp = cv2.normalize(disparity, disparity, alpha=0, beta=255, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_8U)
+        disp_left = cv2.normalize(disparity_left, disparity_left, alpha=0, beta=255, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_8U)
+        #求右相机深度图
+        disparity_right = stereo.compute(img2_rectified, img1_rectified)
+        disp_right = cv2.normalize(disparity_right, disparity_right, alpha=0, beta=255, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_8U)
 
-        # 生成深度图（颜色图）
-        dis_color = disparity
-        dis_color = cv2.normalize(dis_color, None, alpha=0, beta=255, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_8U)
-        dis_color = cv2.applyColorMap(dis_color, 2)
+        # 生成左相机深度图（颜色图）
+        dis_color_left = disparity_left
+        dis_color_left = cv2.normalize(dis_color_left, None, alpha=0, beta=255, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_8U)
+        dis_color_left = cv2.applyColorMap(dis_color_left, 2)
 
+        #生成右相机深度图（颜色图）
+        dis_color_right = disparity_right
+        dis_color_right = cv2.normalize(dis_color_right, None, alpha=0, beta=255, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_8U)
+        dis_color_right = cv2.applyColorMap(dis_color_right, 2)
+        
         # 计算三维坐标数据值
-        threeD = cv2.reprojectImageTo3D(disparity, Q, handleMissingValues=True)
-        # 计算出的threeD，需要乘以16，才等于现实中的距离
-        threeD = threeD * 16
+        threeD_left = cv2.reprojectImageTo3D(disparity_left, Q, handleMissingValues=True)
+        threeD_right = cv2.reprojectImageTo3D(disparity_right, Q, handleMissingValues=True)
 
-        cv2.imshow("depth", dis_color)
-        cv2.imshow(WIN_NAME, disp)  # 显示深度图的双目画面
-        cv2.imshow("img1_rectified", img1_rectified)
+        # 计算出的threeD，需要乘以16，才等于现实中的距离
+        threeD_left = threeD_left * 16
+        threeD_right = threeD_right * 16
 
         # 获取左右相机中目标点的三维坐标值
-        point_left = threeD[int(cly), int(clx)]
-        point_right = threeD[int(cry), int(crx)]
+        point_left = threeD_left[int(cly), int(clx)]
+        point_right = threeD_right[int(cry), int(crx)]
 
         # 计算目标点的深度值（欧氏距离）- 这里简单地计算左右相机中对应点的距离
         depth = math.sqrt((point_left[0] - point_right[0]) ** 2 + (point_left[1] - point_right[1]) ** 2 + (point_left[2] - point_right[2]) ** 2)
         print("depth:", depth)
 
+        # cv2.imshow('Deep disp_left', disp_left)  # 显示深度图的双目画面
+        # cv2.imshow('Deep disp_right', disp_right)
+        cv2.imshow('disparity_left', dis_color_left)# 显示color深度图的双目画面
+        cv2.imshow('disparity_right', dis_color_right)
+        cv2.imshow("img1_rectified", img1_rectified)
+
         # 鼠标回调事件
-        cv2.setMouseCallback("depth", onmouse_pick_points, threeD)
+        cv2.setMouseCallback("disparity_left", onmouse_pick_points, threeD_left)
+        cv2.setMouseCallback("disparity_right", onmouse_pick_points, threeD_right)
 
         #完成计时，计算帧率
         fps = (fps + (1. / (time.time() - t1))) / 2
