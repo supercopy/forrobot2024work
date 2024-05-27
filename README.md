@@ -8,3 +8,6 @@ change_name.py 快速修改文件名字
 orange.py 返回橘子轮廓中心坐标  
 getsettings.py 得到当前相机宽高参数
 orangeblock.py 可调用的orange类  
+  
+  
+需要UI:显示目标数目，排序并显示三维坐标，目前采摘到第几个  
