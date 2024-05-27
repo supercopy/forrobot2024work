@@ -7,3 +7,4 @@ get_threshold.py 阈值调试工具，请注意：改变光照之后的阈值可
 change_name.py 快速修改文件名字  
 orange.py 返回橘子轮廓中心坐标  
 getsettings.py 得到当前相机宽高参数
+orangeblock.py 可调用的orange类  
