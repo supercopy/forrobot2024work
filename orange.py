@@ -5,11 +5,14 @@ import time
 kernel = np.ones((5,5),np.uint8)
 kernel_open = np.ones((10,10),np.uint8)
 
-capl = cv2.VideoCapture(1)#左相机
+left_camera = 2
+right_camera =1
+
+capl = cv2.VideoCapture(left_camera)#左相机
 capl.set(3, 640) #设置分辨率宽
 capl.set(4, 480) #设置分辨率高
 
-capr = cv2.VideoCapture(2)#右相机
+capr = cv2.VideoCapture(right_camera)#右相机
 capr.set(3, 640) #设置分辨率宽
 capr.set(4, 480) #设置分辨率高
 
@@ -38,6 +41,8 @@ hsv_high = np.array([31, 255, 255])
 
 clX = 1
 clY = 1
+crX = 1
+crY = 1
 
 #图像处理并返回轮廓点
 def get_contours(image):
@@ -87,7 +92,7 @@ while(True):
             clX, clY = get_center(Ml)  # 得到矩形中心点
             cv2.circle(imagel, (clX, clY), 5, (0, 0, 255), -1)  # 画出矩形中心点
             if clX != reglX or clY != reglY:
-                print(clX, clY)
+                print("左相机目标点： ", clX, clY)
 
     for cntr in contoursr:
         arear = cv2.contourArea(cntr)
@@ -103,7 +108,7 @@ while(True):
             crX, crY = get_center(Mr)  # 得到矩形中心点
             cv2.circle(imager, (crX, crY), 5, (0, 0, 255), -1)  # 画出矩形中心点
             if crX != regrX or crY != regrY:
-                print(crX, crY)
+                print("右相机目标点： ",crX, crY)
 
     cv2.imshow('imagel', imagel)
     cv2.imshow('imager', imager)
