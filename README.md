@@ -12,9 +12,10 @@ change_name.py 快速修改文件名字
 orange.py 返回橘子轮廓中心坐标  
 getsettings.py 得到当前相机宽高参数
 orangeblock.py 可调用的orange类  
+mysgbm-video.py 调用orangeblock.py返回的二维坐标进行归一化变化，根据左右相机深度图得到目标点深度  
   
 需要UI:  
-请读取.py文件  
+请查看mysgbm-video.py 
 使用槽函数实现输入相机序列号，方便左右相机的选择；  
 显示目标在左右相机的像素坐标，即(clX，clY),(crX, crY)；  
 显示计算得到的视差；  
