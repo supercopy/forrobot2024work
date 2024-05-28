@@ -7,11 +7,11 @@ if not os.path.exists('pics'):
 
 # 打开摄像头
 cap = cv2.VideoCapture(1)
-cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1080)
+cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
 
 cap1 = cv2.VideoCapture(2)
-cap1.set(cv2.CAP_PROP_FRAME_WIDTH, 1080)
+cap1.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
 cap1.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
 
 i = 1

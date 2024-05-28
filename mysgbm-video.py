@@ -24,6 +24,11 @@ array_datar = np.array([[572.929758405986, -3.74046455734938, 365.816495202695],
 left_camera_matrix = array_datal.T
 right_camera_matrix = array_datar.T
 
+# 相机的焦距（单位：像素）
+focal_length = (1280 * 35 / 36) / 1000 #使用35mm相机的焦距，从exif信息中获取，35mm相机的胶片尺寸是36mm*24mm，图像为1280*720，转换单位为m
+
+scale_factor = 4  # 深度图转换的比例因子，可以根据实际情况进行调整
+
 # 畸变系数,K1、K2、K3为径向畸变,P1、P2为切向畸变
 left_distortion = np.array([[0.124785954085824, -0.108200579559554, 0.00139760804551312, -0.00545030823545750, 0.001]])
 right_distortion = np.array([[0.0827221706506679,0.0936542340045818, 0.00862240665117579,-0.00249349828386763, 0.001]])
@@ -49,6 +54,10 @@ left_map1, left_map2 = cv2.initUndistortRectifyMap(left_camera_matrix, left_dist
 right_map1, right_map2 = cv2.initUndistortRectifyMap(right_camera_matrix, right_distortion, R2, P2, size, cv2.CV_16SC2)
 print(Q)
 
+# 根据相机内参计算实际距离的转换函数
+def convert_depth_value(depth_value, focal_length, scale_factor):
+    return depth_value * focal_length / scale_factor
+
 # --------------------------鼠标回调函数---------------------------------------------------------
 #   event               鼠标事件
 #   param               输入参数
@@ -62,7 +71,8 @@ def onmouse_pick_points(event, x, y, flags, param):
 
         distance = math.sqrt(threeD_left[y][x][0] ** 2 + threeD_left[y][x][1] ** 2 + threeD_left[y][x][2] ** 2)
         distance = distance / 1000.0  # mm -> m
-        print("距离是：", distance, "m")
+        real_distance = convert_depth_value(distance, focal_length, scale_factor)
+        print("真实距离是:", real_distance, "m")
 
 # 打开摄像头
 capl = cv2.VideoCapture(2)
@@ -159,7 +169,9 @@ if __name__ == "__main__":
 
         # 计算目标点的深度值（欧氏距离）- 这里简单地计算左右相机中对应点的距离
         depth = math.sqrt((point_left[0] - point_right[0]) ** 2 + (point_left[1] - point_right[1]) ** 2 + (point_left[2] - point_right[2]) ** 2)
-        print("depth:", depth)
+        # 转换深度值为实际世界距离
+        real_distance = convert_depth_value(depth, focal_length, scale_factor)
+        print("真实距离:", real_distance, "m")
 
         # cv2.imshow('Deep disp_left', disp_left)  # 显示深度图的双目画面
         # cv2.imshow('Deep disp_right', disp_right)
