@@ -6,11 +6,11 @@ if not os.path.exists('pics'):
     os.makedirs('pics')
 
 # 打开摄像头
-cap = cv2.VideoCapture(1)
+cap = cv2.VideoCapture(2)
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
 
-cap1 = cv2.VideoCapture(2)
+cap1 = cv2.VideoCapture(1)
 cap1.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
 cap1.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
 
@@ -30,10 +30,10 @@ while True:
     # 检测按键
     key = cv2.waitKey(1) & 0xFF
     if key == ord('r'):
-        # filenamel = f'pics/left/cornerl_{i}.png'
-        # filenamer = f'pics/right/cornerr_{i}.png'
-        filenamel = f'pics/cornerl_{i}.png'
-        filenamer = f'pics/cornerr_{i}.png'
+        filenamel = f'pics/left/cornerl_{i}.png'
+        filenamer = f'pics/right/cornerr_{i}.png'
+        # filenamel = f'pics/cornerl_{i}.png'
+        # filenamer = f'pics/cornerr_{i}.png'
         cv2.imwrite(filenamel, framel)
         cv2.imwrite(filenamer, framer)
         print(f'Frame captured and saved as {filenamel}!')

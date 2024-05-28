@@ -14,45 +14,49 @@ from orangeblock import fruit_center
 #   right_distortion            右相机的畸变系数
 # -------------------------------------------------------------------------------------------------------------
 # 左镜头的内参，如焦距
-array_datal = np.array([[562.033986323064, -1.20112458901875, 368.580858376389],
-                        [0, 562.529949757492, 303.887885031138],
-                        [0, 0, 1]])
-array_datar = np.array([[572.929758405986, -3.74046455734938, 365.816495202695],
-                        [0, 572.333398525109, 315.108984903095],
-                        [0, 0, 1]])
+array_datal = np.array([[665.708680641050, 0, 608.007556651546],
+                 [0, 658.259575109014, 349.414700641615],
+                 [0, 0, 1]])
+array_datar = np.array([[658.816842107741, 0, 628.024134809292],
+                 [0, 651.968299224625, 346.395327320762],
+                 [0, 0, 1]])
 
-left_camera_matrix = array_datal.T
-right_camera_matrix = array_datar.T
+left_camera_matrix = array_datal
+right_camera_matrix = array_datar
+
+# left_camera_matrix = array_datal.T
+# right_camera_matrix = array_datar.T
 
 # 相机的焦距（单位：像素）
 focal_length = (1280 * 35 / 36) / 1000 #使用35mm相机的焦距，从exif信息中获取，35mm相机的胶片尺寸是36mm*24mm，图像为1280*720，转换单位为m
 
 scale_factor = 4  # 深度图转换的比例因子，可以根据实际情况进行调整
 
-# 畸变系数,K1、K2、K3为径向畸变,P1、P2为切向畸变
-left_distortion = np.array([[0.124785954085824, -0.108200579559554, 0.00139760804551312, -0.00545030823545750, 0.001]])
-right_distortion = np.array([[0.0827221706506679,0.0936542340045818, 0.00862240665117579,-0.00249349828386763, 0.001]])
+# 畸变系数,K1、K2、K3为径向畸变,P1、P2为切向畸变,次序为k1,k2,p1,p2,k3,这份代码无k3参数，在reg2中有带k3参数的代码
+left_distortion = np.array([[0.0855575067223019, -0.101075323042139, 0.000717078106918775, -0.00379148552763136, 0]])
+right_distortion = np.array([[0.0798755813002228, -0.0953198903280210, 0.000428987925347287, 0.00180737891825946, 0]])
 
 # left_distortion = np.array([[0, 0, 0, 0, 0]])
 # right_distortion = np.array([[0, 0, 0, 0, 0]])
 
 # 旋转矩阵
-R = np.array([[0.994844339868849, -0.0345781648731146, -0.0953367187652339],
-                [0.0327011285263699, 0.999240701327606, -0.0211815250493617],
-                [0.0959967479866658, 0.0179547020115234, 0.995219700896070]])
+R = np.array([[0.998223206868815, 0.0499560086850059, -0.0324780920745370],
+                 [-0.0498410539286819, 0.998747732943592, 0.00433996351528645],
+                 [0.0326542280848393, -0.00271350995933524, 0.999463024954842]])
 # 平移矩阵
-T = np.array([142.208416260587, -0.109666878255351, 9.44528784942127])
+T = np.array([-142.347426331190, 5.34298687576439, -1.56832656665621])
 
-size = (640, 480)
+size = (1280, 720)
 
+#R1、R2、P1、P2是校正后的相机内参矩阵，Q是立体校正后的图像的视差图（深度图），validPixROI1和validPixROI2是校正后的图像的有效像素区域
 R1, R2, P1, P2, Q, validPixROI1, validPixROI2 = cv2.stereoRectify(left_camera_matrix, left_distortion,
                                                                   right_camera_matrix, right_distortion, size, R,
                                                                   T)
 
 # 校正查找映射表,将原始图像和校正后的图像上的点一一对应起来
+#left_map1和left_map2，分别表示左相机校正查找映射表的x和y坐标，right_map1和right_map2分别表示右相机校正查找映射表的x和y坐标
 left_map1, left_map2 = cv2.initUndistortRectifyMap(left_camera_matrix, left_distortion, R1, P1, size, cv2.CV_16SC2)
 right_map1, right_map2 = cv2.initUndistortRectifyMap(right_camera_matrix, right_distortion, R2, P2, size, cv2.CV_16SC2)
-print(Q)
 
 # 根据相机内参计算实际距离的转换函数
 def convert_depth_value(depth_value, focal_length, scale_factor):
@@ -76,12 +80,12 @@ def onmouse_pick_points(event, x, y, flags, param):
 
 # 打开摄像头
 capl = cv2.VideoCapture(2)
-capl.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
-capl.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+capl.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
+capl.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
 
 capr = cv2.VideoCapture(1)
-capr.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
-capr.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+capr.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
+capr.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
 
 # 读取视频
 fps = 0.0
