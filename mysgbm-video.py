@@ -30,7 +30,7 @@ right_camera_matrix = array_datar
 # 相机的焦距（单位：像素）
 focal_length = (1280 * 35 / 36) / 1000 #使用35mm相机的焦距，从exif信息中获取，35mm相机的胶片尺寸是36mm*24mm，图像为1280*720，转换单位为m
 
-scale_factor = 4  # 深度图转换的比例因子，可以根据实际情况进行调整
+scale_factor = 1.3  # 深度图转换的比例因子，可以根据实际情况进行调整
 
 # 畸变系数,K1、K2、K3为径向畸变,P1、P2为切向畸变,次序为k1,k2,p1,p2,k3,这份代码无k3参数，在reg2中有带k3参数的代码
 left_distortion = np.array([[0.0855575067223019, -0.101075323042139, 0.000717078106918775, -0.00379148552763136, 0]])
@@ -46,7 +46,7 @@ R = np.array([[0.998223206868815, 0.0499560086850059, -0.0324780920745370],
 # 平移矩阵
 T = np.array([-142.347426331190, 5.34298687576439, -1.56832656665621])
 
-size = (1280, 720)
+size = (800, 600)
 
 #R1、R2、P1、P2是校正后的相机内参矩阵，Q是立体校正后的图像的视差图（深度图），validPixROI1和validPixROI2是校正后的图像的有效像素区域
 R1, R2, P1, P2, Q, validPixROI1, validPixROI2 = cv2.stereoRectify(left_camera_matrix, left_distortion,
@@ -80,12 +80,12 @@ def onmouse_pick_points(event, x, y, flags, param):
 
 # 打开摄像头
 capl = cv2.VideoCapture(2)
-capl.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
-capl.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
+capl.set(cv2.CAP_PROP_FRAME_WIDTH, 800)
+capl.set(cv2.CAP_PROP_FRAME_HEIGHT, 600)
 
 capr = cv2.VideoCapture(1)
-capr.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
-capr.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
+capr.set(cv2.CAP_PROP_FRAME_WIDTH, 800)
+capr.set(cv2.CAP_PROP_FRAME_HEIGHT, 600)
 
 # 读取视频
 fps = 0.0
@@ -127,7 +127,7 @@ if __name__ == "__main__":
         #   mode                        sgbm算法选择模式，以速度由快到慢为：STEREO_SGBM_MODE_SGBM_3WAY、
         #                               STEREO_SGBM_MODE_HH4、STEREO_SGBM_MODE_SGBM、STEREO_SGBM_MODE_HH。精度反之
         # ------------------------------------------------------------------------------------------------------
-        blockSize = 5
+        blockSize = 8
         img_channels = 3
         stereo = cv2.StereoSGBM_create(minDisparity=1,
                                     numDisparities=128,
@@ -175,7 +175,7 @@ if __name__ == "__main__":
         depth = math.sqrt((point_left[0] - point_right[0]) ** 2 + (point_left[1] - point_right[1]) ** 2 + (point_left[2] - point_right[2]) ** 2)
         # 转换深度值为实际世界距离
         real_distance = convert_depth_value(depth, focal_length, scale_factor)
-        print("真实距离:", real_distance, "m")
+        # print("真实距离:", real_distance, "m")
 
         # cv2.imshow('Deep disp_left', disp_left)  # 显示深度图的双目画面
         # cv2.imshow('Deep disp_right', disp_right)

@@ -59,7 +59,7 @@ class fruit_center:
                 cv2.circle(imagel, (self.clX, self.clY), 5, (0, 0, 255), -1)  # 画出矩形中心点
                 if self.clX != reglX or self.clY != reglY:
                     centerl_points = (self.clX, self.clY)  # 得到左相机目标点坐标
-                    print("左相机目标点坐标：",centerl_points)
+                    # print("左相机目标点坐标：",centerl_points)
 
         for cntr in contoursr:
             arear = cv2.contourArea(cntr)
@@ -76,9 +76,9 @@ class fruit_center:
                 cv2.circle(imager, (self.crX, self.crY), 5, (0, 0, 255), -1)  # 画出矩形中心点
                 if self.crX != regrX or self.crY != regrY:
                         centerr_points = (self.crX, self.crY)  # 得到右相机目标点坐标
-                        print("右相机目标点坐标：",centerr_points)
+                        # print("右相机目标点坐标：",centerr_points)
 
-        cv2.imshow('imagel', imagel)
-        cv2.imshow('imager', imager)
+        # cv2.imshow('imagel', imagel)
+        # cv2.imshow('imager', imager)
 
         return self.clX, self.clY, self.crX, self.crY
