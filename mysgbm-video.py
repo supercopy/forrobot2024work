@@ -30,7 +30,7 @@ right_camera_matrix = array_datar
 # 相机的焦距（单位：像素）
 focal_length = (1280 * 35 / 36) / 1000 #使用35mm相机的焦距，从exif信息中获取，35mm相机的胶片尺寸是36mm*24mm，图像为1280*720，转换单位为m
 
-scale_factor = 1.3  # 深度图转换的比例因子，可以根据实际情况进行调整
+scale_factor = 1.4  # 深度图转换的比例因子，可以根据实际情况进行调整
 
 # 畸变系数,K1、K2、K3为径向畸变,P1、P2为切向畸变,次序为k1,k2,p1,p2,k3,这份代码无k3参数，在reg2中有带k3参数的代码
 left_distortion = np.array([[0.0855575067223019, -0.101075323042139, 0.000717078106918775, -0.00379148552763136, 0]])
@@ -186,6 +186,7 @@ if __name__ == "__main__":
         # 鼠标回调事件
         cv2.setMouseCallback("disparity_left", onmouse_pick_points, threeD_left)
         cv2.setMouseCallback("disparity_right", onmouse_pick_points, threeD_right)
+        cv2.setMouseCallback("img1_rectified", onmouse_pick_points, threeD_left )
 
         #完成计时，计算帧率
         fps = (fps + (1. / (time.time() - t1))) / 2
