@@ -70,7 +70,7 @@ def onmouse_pick_points(event, x, y, flags, param):
     if event == cv2.EVENT_LBUTTONDOWN:
         threeD_left = param
         print('\n像素坐标 x = %d, y = %d' % (x, y))
-        # print("世界坐标是：", threeD_left[y][x][0], threeD_left[y][x][1], threeD_left[y][x][2], "mm")
+        print("世界坐标是：", threeD_left[y][x][0], threeD_left[y][x][1], threeD_left[y][x][2], "mm")
         print("世界坐标xyz 是：", threeD_left[y][x][0] / 1000.0, threeD_left[y][x][1] / 1000.0, threeD_left[y][x][2] / 1000.0, "m")
 
         distance = math.sqrt(threeD_left[y][x][0] ** 2 + threeD_left[y][x][1] ** 2 + threeD_left[y][x][2] ** 2)
@@ -127,7 +127,7 @@ if __name__ == "__main__":
         #   mode                        sgbm算法选择模式，以速度由快到慢为：STEREO_SGBM_MODE_SGBM_3WAY、
         #                               STEREO_SGBM_MODE_HH4、STEREO_SGBM_MODE_SGBM、STEREO_SGBM_MODE_HH。精度反之
         # ------------------------------------------------------------------------------------------------------
-        blockSize = 8
+        blockSize = 7
         img_channels = 3
         stereo = cv2.StereoSGBM_create(minDisparity=1,
                                     numDisparities=128,
