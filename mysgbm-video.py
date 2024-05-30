@@ -79,11 +79,11 @@ def onmouse_pick_points(event, x, y, flags, param):
         print("真实距离是:", real_distance, "m")
 
 # 打开摄像头
-capl = cv2.VideoCapture(2)
+capl = cv2.VideoCapture(1)
 capl.set(cv2.CAP_PROP_FRAME_WIDTH, 800)
 capl.set(cv2.CAP_PROP_FRAME_HEIGHT, 600)
 
-capr = cv2.VideoCapture(1)
+capr = cv2.VideoCapture(2)
 capr.set(cv2.CAP_PROP_FRAME_WIDTH, 800)
 capr.set(cv2.CAP_PROP_FRAME_HEIGHT, 600)
 
@@ -155,6 +155,7 @@ if __name__ == "__main__":
         dis_color_left = cv2.applyColorMap(dis_color_left, 2)
 
         #生成右相机深度图（颜色图）
+
         dis_color_right = disparity_right
         dis_color_right = cv2.normalize(dis_color_right, None, alpha=0, beta=255, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_8U)
         dis_color_right = cv2.applyColorMap(dis_color_right, 2)
