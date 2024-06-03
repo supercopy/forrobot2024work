@@ -3,7 +3,6 @@ import numpy as np
 import time
 import random
 import math
-
 from orangeblock import fruit_center
 
 # -----------------------------------双目相机的基本参数---------------------------------------------------------
@@ -65,7 +64,14 @@ def convert_depth_value(depth_value, focal_length, scale_factor):
 # --------------------------鼠标回调函数---------------------------------------------------------
 #   event               鼠标事件
 #   param               输入参数
+#   x, y                 鼠标点击位置的像素坐标
+#   threeD_left        左相机的深度图，可以通过它得到世界坐标
+#   real_distance       真实距离
 # -----------------------------------------------------------------------------------------------
+'''
+相机坐标系的原点定义为相机光心，生成的深度图和三维坐标都是以左相机坐标系的光心作为世界坐标系的原点。
+深度和距离计算是相对于左相机而言的，世界坐标系的原点被定义为左相机光心的位置
+'''
 def onmouse_pick_points(event, x, y, flags, param):
     if event == cv2.EVENT_LBUTTONDOWN:
         threeD_left = param
@@ -183,11 +189,13 @@ if __name__ == "__main__":
         cv2.imshow('disparity_left', dis_color_left)# 显示color深度图的双目画面
         cv2.imshow('disparity_right', dis_color_right)
         cv2.imshow("img1_rectified", img1_rectified)
+        cv2.imshow("img2_rectified", img2_rectified)
 
         # 鼠标回调事件
         cv2.setMouseCallback("disparity_left", onmouse_pick_points, threeD_left)
         cv2.setMouseCallback("disparity_right", onmouse_pick_points, threeD_right)
         cv2.setMouseCallback("img1_rectified", onmouse_pick_points, threeD_left )
+        cv2.setMouseCallback("img2_rectified", onmouse_pick_points, threeD_right)
 
         #完成计时，计算帧率
         fps = (fps + (1. / (time.time() - t1))) / 2
