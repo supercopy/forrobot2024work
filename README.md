@@ -14,6 +14,8 @@ orange.py 返回橘子轮廓中心坐标
 getsettings.py 得到当前相机宽高参数  
 orangeblock.py 可调用的orange类  
 mysgbm-video.py 调用orangeblock.py返回的二维坐标进行归一化变化，根据左右相机深度图得到目标点深度  
+使用transform.m 求出变换矩阵，可添加更多点提升精确度，estimate_transform_matrix.m为使用最小二乘法估计变换矩阵T_AB的函数，需要一同下载使用
+使用reg.py验证变换矩阵
   
 需要UI:  
 请查看mysgbm-video.py 

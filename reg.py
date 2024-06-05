@@ -1,37 +1,34 @@
 import numpy as np
 
-class HomographyMapper:
-    def __init__(self, points_1, points_2):
-        self.points_1 = np.array([np.concatenate((p, [1])) for p in points_1])
-        self.points_2 = np.array([np.concatenate((p, [1])) for p in points_2])
-        H = np.linalg.inv(self.points_1.T @ self.points_1) @ self.points_1.T @ self.points_2
-        self.H_4x4 = np.pad(H, ((0, 1), (0, 0)), mode='constant', constant_values=0)
-        self.H_4x4[3, 3] = 1
+# 定义坐标系A的四个点
+P_A = np.array([[0.11820718383789063, 0.05533146667480469, 1.0028218383789063],
+                [-0.01996559715270996, 0.09150011444091796, 0.94927001953125],
+                [-0.19349075317382813, 0.07384275817871094, 0.9843123168945312],
+                [-0.38008270263671873, 0.05715393829345703, 1.164743896484375]])
 
-    def map_points_with_homography(self, points_3d):
-        points_homogeneous = np.column_stack((points_3d, np.ones((points_3d.shape[0], 1))))
-        mapped_points = np.dot(self.H_4x4, points_homogeneous)
-        mapped_points_cartesian = mapped_points[:, :3] / mapped_points[:, 3][:, None]
-        return mapped_points_cartesian
+# 定义坐标系B的四个对应点
+P_B = np.array([[-0.21501827451228817, -0.31151167908915567, -0.06251055943497788],
+                [-0.09883309329815113, -0.4565774141020829, -0.07697371230214964],
+                [0.09122137521581827, -0.4566295945409391, -0.07724894630523474],
+                [0.2409934766406208, -0.2882685735221945, -0.04749755037280354]])
 
-# 定义四个第一三维坐标系点
-right_xyz1 = np.array([0.11820718383789063, 0.05533146667480469, 1.0028218383789063])
-right_xyz2 = np.array([-0.01996559715270996, 0.09150011444091796, 0.94927001953125])
-right_xyz3 = np.array([-0.19349075317382813, 0.07384275817871094, 0.9843123168945312])
-right_xyz4 = np.array([-0.38008270263671873, 0.05715393829345703, 1.164743896484375])
+# 定义给定的变换矩阵T_AB
+T_AB = np.array([[-0.9785, -0.0097, 0.2058, -0.3221],
+                 [0.1949, -0.3674, 0.9094, -1.2620],
+                 [0.0668, 0.9300, 0.3614, -0.4932],
+                 [0, 0, 0, 1]])
 
-# 定义四个第二三维坐标系点
-right_4 = np.array([-0.21501827451228817, -0.31151167908915567, -0.06251055943497788])
-right_3 = np.array([-0.09883309329815113, -0.4565774141020829, -0.07697371230214964])
-right_2 = np.array([0.09122137521581827, -0.4566295945409391, -0.07724894630523474])
-right_1 = np.array([0.2409934766406208, -0.2882685735221945, -0.04749755037280354])
+# 添加一列全为1的向量到P_A以便进行矩阵乘法
+P_A_homogeneous = np.hstack((P_A, np.ones((4, 1))))
 
-# 创建HomographyMapper对象并进行测试
-points_1 = np.array([right_xyz1, right_xyz2, right_xyz3, right_xyz4])
-points_2 = np.array([right_1, right_2, right_3, right_4])
-mapper = HomographyMapper(points_1, points_2)
+# 使用变换矩阵T_AB对P_A进行变换
+P_A_transformed = np.dot(T_AB, P_A_homogeneous.T).T
 
-print("Mapped Point in Second 3D Coordinate System:")
-points_3d_to_map = np.array([right_xyz1])
-mapped_points_3d = mapper.map_points_with_homography(points_3d_to_map)
-print(mapped_points_3d)
+# 输出验证结果
+print("验证估计得到的坐标系A到坐标系B的变换矩阵T_AB：")
+print("变换前坐标系A的点：")
+print(P_A)
+print("变换后坐标系A的点投影到坐标系B的点：")
+print(P_A_transformed[:, :3])
+print("坐标系B的对应点：")
+print(P_B)
