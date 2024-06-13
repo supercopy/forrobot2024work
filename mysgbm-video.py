@@ -85,11 +85,11 @@ def onmouse_pick_points(event, x, y, flags, param):
         print("真实距离是:", real_distance, "m")
 
 # 打开摄像头
-capl = cv2.VideoCapture(1)
+capl = cv2.VideoCapture(2)
 capl.set(cv2.CAP_PROP_FRAME_WIDTH, 800)
 capl.set(cv2.CAP_PROP_FRAME_HEIGHT, 600)
 
-capr = cv2.VideoCapture(2)
+capr = cv2.VideoCapture(1)
 capr.set(cv2.CAP_PROP_FRAME_WIDTH, 800)
 capr.set(cv2.CAP_PROP_FRAME_HEIGHT, 600)
 
